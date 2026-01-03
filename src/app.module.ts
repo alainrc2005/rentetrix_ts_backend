@@ -3,6 +3,7 @@ import { RentetrixOrmModule } from '@/commons/datasource/typeorm.module'
 import { RentetrixConfigModule } from '@/commons/config/config.module'
 import { ClsModule } from 'nestjs-cls'
 import { SystemModule } from '@/admin/system/system.module'
+import { RolesModule } from '@/admin/roles/roles.module'
 
 @Module({
    imports: [
@@ -19,7 +20,8 @@ import { SystemModule } from '@/admin/system/system.module'
             mount: true, // Mount ClsGuard automatically
          }
       }),
-      SystemModule
+      SystemModule,
+      RolesModule
    ],
 })
 export class AppModule {

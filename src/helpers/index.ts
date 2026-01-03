@@ -5,6 +5,7 @@ import { RentetrixException } from '@/commons/exception'
 import { AssertionError } from 'node:assert'
 import * as fs from 'node:fs'
 export * from './rentetrix.crypto'
+export * from './auth.user.dto'
 
 const TResults = {
    E_USER_NOT_FOUND: 'e_user_not_found',
@@ -75,4 +76,6 @@ function createRecursiveDirectory(path: string): void {
    }
 }
 
-export { TResults, DefaultResult, getErrorMessage, createRecursiveDirectory }
+const ksec = 'f0fcdd65e29c4c8aa0c24246d59ff1fc2f7464300b0f288d6495a1f7dd4509b5'
+
+export { TResults, DefaultResult, getErrorMessage, createRecursiveDirectory, ksec }

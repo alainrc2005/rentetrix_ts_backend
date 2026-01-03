@@ -14,5 +14,26 @@ type TMetaFileStorage = {
 
 type TResult = { [key: string]: any }
 
+interface IRequestDatatable {
+   filter?: string
+   sortBy?: string
+   descending: boolean
+   startRow?: number
+   rowsPerPage?: number
 
-export type { Nullable, Optional, TMetaFileStorage, TResult }
+   [key: string]: any
+}
+
+type TDatatableColumn = {
+   field: string
+   search?: boolean
+}
+type TDatatableColumns = TDatatableColumn[]
+
+interface IDatatableResult {
+   recordsFiltered: number
+   rows: Array<any>
+}
+
+export type { Nullable, Optional, TMetaFileStorage, TResult,
+   IRequestDatatable, TDatatableColumns, IDatatableResult, TDatatableColumn }
