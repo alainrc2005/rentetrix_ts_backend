@@ -1,12 +1,14 @@
 import {
   Entity,
-  Column
+  Column,
+  BaseEntity, PrimaryGeneratedColumn
 } from 'typeorm'
-
-import { BaseEntity } from './'
 
 @Entity('permissions')
 export class Permission extends BaseEntity {
+  @PrimaryGeneratedColumn('identity', { generatedIdentity: 'ALWAYS' })
+  id: number
+
   @Column({ type: 'varchar', length: 255 })
   name: string
 
