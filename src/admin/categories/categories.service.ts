@@ -10,6 +10,7 @@ export class CategoriesService {
    private readonly logger = new Logger(CategoriesService.name)
    private readonly commonFields = [
       ['id', 'name', 'active', 'system'], // 0
+      ['key', 'name_es', 'name_en', 'name_fr'], // 1
    ]
 
    private readonly tables: { [key: string]: number } = {
@@ -22,6 +23,7 @@ export class CategoriesService {
       contact_forms: 0,
       channels: 0,
       car_status: 0,
+      sys_language: 1,
    }
 
    constructor(private readonly dataSource: DataSource) {
