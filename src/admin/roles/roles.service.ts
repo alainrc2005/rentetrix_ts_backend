@@ -64,8 +64,8 @@ export class RolesService {
                name: role.name,
                description: role.description,
                system: role.system,
-               createdBy: user,
-               updatedBy: user
+               created_by: user.id,
+               updated_by: user.id
             }))
             return this.syncPermissions(row.id, role.permissions, em)
          })
@@ -80,7 +80,8 @@ export class RolesService {
       try {
          const userId: number = this.clsService.get<number>('user_id')
          const user = await User.findOneBy({ id: userId })
-         const roleDb = await this.roleRepository.findOne({ where: { id }, relations: ['createdBy', 'updatedBy', 'permissions'] })
+         assert.ok(user !== null, TResults.E_RECORD_NOT_FOUND)
+         const roleDb = await this.roleRepository.findOne({ where: { id }, relations: ['created_by', 'updated_by', 'permissions'] })
          assert.ok(roleDb !== null, TResults.E_RECORD_NOT_FOUND)
          await this.dataSource.manager.transaction(async (em) => {
             const repo = em.withRepository(this.roleRepository)
@@ -88,7 +89,7 @@ export class RolesService {
                name: role.name,
                description: role.description,
                system: role.system,
-               updatedBy: user
+               updated_by: user.id
             })
             await em.save(roleDb, { reload: true})
             return this.syncPermissions(id, role.permissions, em)

@@ -3,10 +3,10 @@ import {
    Column,
    ManyToMany,
    JoinTable,
-   Unique, ManyToOne, JoinColumn
+   Unique
 } from 'typeorm'
 
-import { BaseEntity, User, Permission } from './'
+import { BaseEntity, Permission } from './'
 
 @Entity('roles')
 export class Role extends BaseEntity {
@@ -19,18 +19,6 @@ export class Role extends BaseEntity {
 
    @Column({ type: 'boolean', default: false })
    system: boolean
-
-   @ManyToOne(() => User, {
-      onDelete: 'SET NULL',
-   })
-   @JoinColumn({ name: 'created_by' })
-   createdBy: User | null
-
-   @ManyToOne(() => User, {
-      onDelete: 'SET NULL',
-   })
-   @JoinColumn({ name: 'updated_by' })
-   updatedBy: User | null
 
    @ManyToMany(() => Permission, { eager: true })
    @JoinTable({

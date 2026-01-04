@@ -4,6 +4,8 @@ import { RentetrixConfigModule } from '@/commons/config/config.module'
 import { ClsModule } from 'nestjs-cls'
 import { SystemModule } from '@/admin/system/system.module'
 import { RolesModule } from '@/admin/roles/roles.module'
+import { CategoriesModule } from '@/admin/categories/categories.module'
+import { AuthModule } from '@/auth/auth.module'
 
 @Module({
    imports: [
@@ -21,7 +23,9 @@ import { RolesModule } from '@/admin/roles/roles.module'
          }
       }),
       SystemModule,
-      RolesModule
+      RolesModule,
+      CategoriesModule,
+      AuthModule
    ],
 })
 export class AppModule {

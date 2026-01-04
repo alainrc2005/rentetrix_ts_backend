@@ -2,7 +2,7 @@ import { Injectable, Logger, StreamableFile } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { DataSource, EntityManager, Repository } from 'typeorm'
 import { DefaultResult, getErrorMessage } from '@/helpers'
-import { IRequestDatatable, TDatatableColumns, TResult } from '@/types'
+import { IRequestDatatable, Nullable, TDatatableColumns, TResult } from '@/types'
 import { UserHasRole, User } from '@/entities'
 import { plainToInstance } from 'class-transformer'
 import generator from 'generate-password-ts'
@@ -105,7 +105,7 @@ export class UsersService {
       return result
    }
 
-   async findByEmail(email: string): Promise<User | null> {
+   async findByEmail(email: string): Promise<Nullable<User>> {
       return this.userRepository.findOne({
          where: { email },
          relations: { roles: true, permissions: true }

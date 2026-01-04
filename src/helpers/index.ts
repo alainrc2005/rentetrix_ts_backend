@@ -1,5 +1,5 @@
 import { Logger } from '@nestjs/common'
-import { QueryFailedError } from 'typeorm'
+import { ObjectLiteral, QueryFailedError } from 'typeorm'
 import { TResult } from '@/types'
 import { RentetrixException } from '@/commons/exception'
 import { AssertionError } from 'node:assert'
@@ -44,7 +44,7 @@ function getErrorMessage(e: unknown, logger: Logger): string {
             case '23503':
                return TResults.E_ROW_FOREIGN_KEY
             default:
-               logger.error(`WIMCORP DB Error Message: ${e.message ?? TResults.Error}`)
+               logger.error(`RENTETRIX DB Error Message: ${e.message ?? TResults.Error}`)
                return TResults.Error
          }
       } else if (e instanceof RentetrixException) {
@@ -76,6 +76,20 @@ function createRecursiveDirectory(path: string): void {
    }
 }
 
+function parseValue(type: string, value: string): string | number | ObjectLiteral {
+   switch (type) {
+      case 'integer':
+         return Number.parseInt(value)
+      case 'float':
+         return Number.parseFloat(value)
+      case 'json':
+         return JSON.parse(value)
+      case 'string':
+      default:
+         return value
+   }
+}
+
 const ksec = 'f0fcdd65e29c4c8aa0c24246d59ff1fc2f7464300b0f288d6495a1f7dd4509b5'
 
-export { TResults, DefaultResult, getErrorMessage, createRecursiveDirectory, ksec }
+export { TResults, DefaultResult, getErrorMessage, createRecursiveDirectory, ksec, parseValue }

@@ -1,12 +1,14 @@
 import {
   Entity,
-  Column, type ObjectLiteral, ManyToOne, JoinColumn
+  Column, type ObjectLiteral, ManyToOne, JoinColumn, BaseEntity, PrimaryGeneratedColumn
 } from 'typeorm'
-
-import { BaseEntity, User } from './'
+import { User } from '@/entities'
 
 @Entity('personal_access_tokens')
 export class PersonalAccessToken extends BaseEntity {
+  @PrimaryGeneratedColumn('identity', { generatedIdentity: 'ALWAYS' })
+  id: number
+
   @ManyToOne(() => User, {
     onDelete: 'CASCADE',
   })
