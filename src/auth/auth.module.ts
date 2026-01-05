@@ -3,12 +3,12 @@ import { AuthController } from './auth.controller'
 import { AuthService } from './auth.service'
 import { JwtModule } from '@nestjs/jwt'
 import { UsersModule } from '@/admin/users/users.module'
-import { RentetrixTemplateService } from '@/services/template.service'
+import { TemplateService } from '@/commons/shared/template.service'
 
 @Module({
    imports: [JwtModule, UsersModule],
    controllers: [AuthController],
-   providers: [AuthService, RentetrixTemplateService]
+   providers: [AuthService, TemplateService]
 })
 export class AuthModule {
 }

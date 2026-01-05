@@ -4,7 +4,7 @@ import { UsersService } from './users.service'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { User } from '@/entities'
 import { FileStorageModule } from '@/commons/file.storage/file.storage.module'
-import { DataTableService } from '@/services/data.table.service'
+import { DataTableService } from '@/commons/shared/data.table.service'
 
 @Module({
    imports: [TypeOrmModule.forFeature([User]), FileStorageModule],

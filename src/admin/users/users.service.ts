@@ -10,7 +10,7 @@ import { UserDto } from './dto'
 import * as process from 'node:process'
 import { join } from 'node:path'
 import { createReadStream } from 'node:fs'
-import { DataTableService } from '@/services/data.table.service'
+import { DataTableService } from '@/commons/shared/data.table.service'
 
 @Injectable()
 export class UsersService {

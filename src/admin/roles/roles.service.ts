@@ -8,7 +8,7 @@ import { plainToInstance } from 'class-transformer'
 import { InjectRepository } from '@nestjs/typeorm'
 import { ClsService } from 'nestjs-cls'
 import { RoleDTO } from './dto/RoleDTO'
-import { DataTableService } from '@/services/data.table.service'
+import { DataTableService } from '@/commons/shared/data.table.service'
 
 @Injectable()
 export class RolesService {

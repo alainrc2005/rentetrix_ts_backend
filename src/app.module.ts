@@ -6,6 +6,8 @@ import { SystemModule } from '@/admin/system/system.module'
 import { RolesModule } from '@/admin/roles/roles.module'
 import { CategoriesModule } from '@/admin/categories/categories.module'
 import { AuthModule } from '@/auth/auth.module'
+import { LanguageModule } from './admin/language/language.module';
+import { SharedModule } from './commons/shared/shared.module'
 
 @Module({
    imports: [
@@ -25,8 +27,11 @@ import { AuthModule } from '@/auth/auth.module'
       SystemModule,
       RolesModule,
       CategoriesModule,
-      AuthModule
+      AuthModule,
+      LanguageModule,
+      SharedModule
    ],
+   controllers: [],
 })
 export class AppModule {
 }

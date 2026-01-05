@@ -6,8 +6,8 @@ import { ObjectLiteral } from 'typeorm'
 import * as fs from 'node:fs'
 
 @Injectable()
-export class RentetrixTemplateService implements OnModuleInit {
-   private readonly logger = new Logger(RentetrixTemplateService.name)
+export class TemplateService implements OnModuleInit {
+   private readonly logger = new Logger(TemplateService.name)
 
    constructor(private readonly configService: ConfigService) {
    }
