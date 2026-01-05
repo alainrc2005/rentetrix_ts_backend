@@ -1,13 +1,13 @@
 /**
  * Servicio de Almacenamiento de Archivos del sistema
- * @author Alain Ramírez Cabrejas <alain.ramirez@wimixsolutions.com>
+ * @author Alain Ramírez Cabrejas <alainrc2005@gmail.com>
  */
 import { Injectable, Logger, Res, StreamableFile } from '@nestjs/common'
-import { AuthUserDto, createRecursiveDirectory, DefaultResult, getErrorMessage, TResults } from '@/helpers'
+import { createRecursiveDirectory, DefaultResult, getErrorMessage, TResults } from '@/helpers'
 import { join } from 'node:path'
 import { v4 as uuidV4 } from 'uuid'
 import * as fs from 'node:fs'
-import type { Optional, TMetaFileStorage, TResult } from '@/types'
+import type { IUser, Optional, TMetaFileStorage, TResult } from '@/types'
 import { ClsService } from 'nestjs-cls'
 import { FileStorage } from '@/entities'
 import { InjectRepository } from '@nestjs/typeorm'
@@ -47,7 +47,7 @@ export class FileStorageService {
                   size: file.size
                }
                fs.writeFileSync(join(storagePath, meta.uuid), file.buffer)
-               const user = this.clsService.get<AuthUserDto>('currentUser')
+               const user = this.clsService.get<IUser>('currentUser')
                const fileStorage = this.fileStorageRepository.create({
                   uuid: meta.uuid,
                   meta,

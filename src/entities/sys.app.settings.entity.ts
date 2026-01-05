@@ -17,4 +17,6 @@ export class SysAppSetting extends BaseEntity {
 
    @Column({ type: 'boolean' })
    system: boolean
+
+   public static readonly logAction = 'UAPP'
 }

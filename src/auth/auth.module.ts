@@ -8,7 +8,8 @@ import { TemplateService } from '@/commons/shared/template.service'
 @Module({
    imports: [JwtModule, UsersModule],
    controllers: [AuthController],
-   providers: [AuthService, TemplateService]
+   providers: [AuthService, TemplateService],
+   exports: [AuthService]
 })
 export class AuthModule {
 }

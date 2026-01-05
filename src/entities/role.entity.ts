@@ -34,5 +34,5 @@ export class Role extends BaseEntity {
    })
    permissions: Permission[]
 
-   public static readonly logAction = 'ROL'
+   public static readonly logAction = 'CR0'
 }

@@ -19,5 +19,5 @@ export class SysLanguage extends BaseEntity {
    @Column({ type: 'varchar', length: 10 })
    type: string
 
-   public static readonly logAction = 'LAN'
+   public static readonly logAction = 'CL0'
 }

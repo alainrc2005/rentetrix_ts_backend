@@ -1,11 +1,11 @@
 import {
-   Entity,
-   PrimaryGeneratedColumn,
+   BaseEntity,
+   BeforeInsert,
    Column,
    CreateDateColumn,
-   UpdateDateColumn,
-   BeforeInsert,
-   BeforeUpdate, BaseEntity
+   Entity,
+   type ObjectLiteral,
+   PrimaryGeneratedColumn
 } from 'typeorm'
 import moment from 'moment-timezone'
 
@@ -27,7 +27,7 @@ export class ActivityLog extends BaseEntity {
    causer_id?: number
 
    @Column({ type: 'json' })
-   properties: { [key: string]: any }
+   properties: ObjectLiteral
 
    @Column({ type: 'varchar', length: 255, nullable: true })
    workstation?: string
@@ -35,21 +35,9 @@ export class ActivityLog extends BaseEntity {
    @CreateDateColumn()
    created_at: Date
 
-   @UpdateDateColumn()
-   updated_at: Date
-
    @BeforeInsert()
    insertCreated() {
-      const now = new Date(
-         moment().tz(process.env?.TZ || 'America/Managua').format('YYYY-MM-DD HH:mm:ss'),
-      )
-      this.created_at = now
-      this.updated_at = now
-   }
-
-   @BeforeUpdate()
-   insertUpdated() {
-      this.updated_at = new Date(
+      this.created_at = new Date(
          moment().tz(process.env?.TZ || 'America/Managua').format('YYYY-MM-DD HH:mm:ss'),
       )
    }

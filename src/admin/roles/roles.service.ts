@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common'
-import { DefaultResult, TResults, getErrorMessage, AuthUserDto } from '@/helpers'
-import { IRequestDatatable, TDatatableColumns, TResult } from '@/types'
+import { DefaultResult, TResults, getErrorMessage } from '@/helpers'
+import { IRequestDatatable, IUser, TDatatableColumns, TResult } from '@/types'
 import { DataSource, EntityManager, Repository } from 'typeorm'
 import { Permission, Role, RoleHasPermission, User } from '@/entities'
 import * as assert from 'node:assert'
@@ -55,7 +55,7 @@ export class RolesService {
    async store(role: RoleDTO): Promise<TResult> {
       const result = DefaultResult()
       try {
-         const currentUser = this.clsService.get<AuthUserDto>('currentUser')
+         const currentUser = this.clsService.get<IUser>('currentUser')
          const user = await User.findOneBy({ id: currentUser.id })
          assert.ok(user !== null, TResults.E_RECORD_NOT_FOUND)
          await this.dataSource.manager.transaction(async (em) => {

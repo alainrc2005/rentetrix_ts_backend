@@ -5,7 +5,6 @@ import { RentetrixException } from '@/commons/exception'
 import { AssertionError } from 'node:assert'
 import * as fs from 'node:fs'
 export * from './rentetrix.crypto'
-export * from './auth.user.dto'
 
 const TResults = {
    E_USER_NOT_FOUND: 'e_user_not_found',

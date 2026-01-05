@@ -58,4 +58,6 @@ export class User extends BaseEntity {
       }
    })
    public permissions: Permission[]
+
+   public static readonly logAction = 'CU0'
 }

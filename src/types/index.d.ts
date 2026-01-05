@@ -2,8 +2,8 @@
  * @author Alain Ramírez Cabrejas <alainrc2005@gmail.com>
  */
 
-type Nullable<T> = T|null
-type Optional<T> = T|undefined
+type Nullable<T> = T | null
+type Optional<T> = T | undefined
 
 type TMetaFileStorage = {
    uuid: string,
@@ -35,5 +35,17 @@ interface IDatatableResult {
    rows: Array<any>
 }
 
-export type { Nullable, Optional, TMetaFileStorage, TResult,
-   IRequestDatatable, TDatatableColumns, IDatatableResult, TDatatableColumn }
+interface IUser {
+   id: number
+   email: number
+   roles: Array<string>
+   permissions: Array<string>
+}
+
+type TUsers = Array<IUser>
+
+export type {
+   Nullable, Optional, TMetaFileStorage, TResult,
+   IRequestDatatable, TDatatableColumns, IDatatableResult, TDatatableColumn,
+   IUser, TUsers
+}
