@@ -13,6 +13,7 @@ import { LocalCacheModule } from '@/commons/local.cache/local.cache.module'
 import { JwtModule } from '@nestjs/jwt'
 import { AuthMiddleware } from '@/middlewares/auth.middleware'
 import { ActivityLogSubscriber } from '@/subscribers/activity.log.subscriber'
+import { EmailTemplateModule } from './admin/email.template/email.template.module';
 
 @Module({
    imports: [
@@ -37,7 +38,8 @@ import { ActivityLogSubscriber } from '@/subscribers/activity.log.subscriber'
       LanguageModule,
       SharedModule,
       LocalCacheModule,
-      JwtModule
+      JwtModule,
+      EmailTemplateModule
    ],
    controllers: [],
    providers: [ActivityLogSubscriber]

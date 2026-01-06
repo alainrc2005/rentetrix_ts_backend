@@ -14,7 +14,7 @@ import { IUser, Optional } from '@/types'
 
 @Injectable()
 export class ActivityLogSubscriber implements EntitySubscriberInterface {
-   public static readonly entityExcludes: Array<string> = ['ActivityLog']
+   public static readonly entityExcludes: Array<string> = ['ActivityLog', 'PersonalAccessToken']
    constructor(private readonly clsService: ClsService,
                private readonly dataSource: DataSource) {
       dataSource.subscribers.push(this)
@@ -51,7 +51,8 @@ export class ActivityLogSubscriber implements EntitySubscriberInterface {
             action: Reflect.get(event.metadata.target, 'logAction')+'2',
             properties: {
                attributes: event.entity,
-               old: event.databaseEntity
+               old: event.databaseEntity,
+               changedColumns: event.updatedColumns.map(col => col.propertyName)
             }
          })
          await this.saveHistory(log, event.manager)

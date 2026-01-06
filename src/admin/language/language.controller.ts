@@ -5,20 +5,20 @@ import { SysLanguageDTO } from '@/admin/language/dto/sys.language.dto'
 
 @Controller('language')
 export class LanguageController {
-   constructor(private readonly languageService: LanguageService){}
+   constructor(private readonly service: LanguageService){}
 
    @Post()
    list(@Body() request: IRequestDatatable) {
-      return this.languageService.list(request)
+      return this.service.list(request)
    }
 
    @Get('fetch/:id')
    fetch(@Param('id', ParseIntPipe) id: number) {
-      return this.languageService.fetch(id)
+      return this.service.fetch(id)
    }
 
    @Put('update/:id')
    update(@Param('id', ParseIntPipe) id: number, @Body() language: SysLanguageDTO) {
-      return this.languageService.update(id, language)
+      return this.service.update(id, language)
    }
 }

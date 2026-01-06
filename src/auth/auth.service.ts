@@ -60,9 +60,9 @@ export class AuthService {
          expiresIn: this.configService.get<StringValue>('jwt.expiresIn')!
       })
       await this.dataSource.transaction(async (tem) => {
-         await tem.delete(PersonalAccessToken, { user: { id: user.id } })
+         await tem.delete(PersonalAccessToken, { user_id: user.id })
          const pat = tem.create(PersonalAccessToken, {
-            user: user,
+            user_id: user.id,
             token,
             last_used_at: new Date(),
             expired_at: moment().add(4, 'day').toDate()
@@ -83,7 +83,7 @@ export class AuthService {
    }
 
    async destroyTokens(user_id: number) {
-      await PersonalAccessToken.delete({ user: { id: user_id } })
+      await PersonalAccessToken.delete({ user_id })
    }
 
    async logout(user_id: number): Promise<TResult> {
