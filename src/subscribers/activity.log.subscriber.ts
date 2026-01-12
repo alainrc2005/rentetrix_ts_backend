@@ -14,7 +14,7 @@ import { IUser, Optional } from '@/types'
 
 @Injectable()
 export class ActivityLogSubscriber implements EntitySubscriberInterface {
-   public static readonly entityExcludes: Array<string> = ['ActivityLog', 'PersonalAccessToken']
+   public static readonly entityExcludes: Array<string> = ['ActivityLog', 'PersonalAccessToken', 'RoleHasPermission']
    constructor(private readonly clsService: ClsService,
                private readonly dataSource: DataSource) {
       dataSource.subscribers.push(this)

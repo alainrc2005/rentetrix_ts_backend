@@ -27,6 +27,12 @@ const TResults = {
    Error: 'Error'
 }
 
+const TSystemRole = {
+   SUPERADMIN: 'super-admin',
+   ADMIN: 'administrator',
+   DRIVER: 'driver',
+   OWNER: 'owner',
+}
 const DefaultResult = (): TResult => ({ code: TResults.OK })
 
 /**
@@ -91,4 +97,4 @@ function parseValue(type: string, value: string): string | number | ObjectLitera
 
 const ksec = 'f0fcdd65e29c4c8aa0c24246d59ff1fc2f7464300b0f288d6495a1f7dd4509b5'
 
-export { TResults, DefaultResult, getErrorMessage, createRecursiveDirectory, ksec, parseValue }
+export { TResults, DefaultResult, getErrorMessage, createRecursiveDirectory, ksec, parseValue, TSystemRole }

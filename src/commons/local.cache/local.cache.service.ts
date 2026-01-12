@@ -1,6 +1,7 @@
 import { Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common'
 import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager'
 import { User } from '@/entities'
+import { TSystemRole } from '@/helpers'
 
 @Injectable()
 export class LocalCacheService implements OnModuleInit {
@@ -32,11 +33,15 @@ export class LocalCacheService implements OnModuleInit {
          relations: { roles: true, permissions: true },
          select: { id: true, roles: true, permissions: true, email: true }
       })
-      const maps = users.map((u) => ({
+      const maps = users.map(u => ({
          id: u.id,
          email: u.email,
-         roles: u.roles.map((r) => r.name),
-         permissions: [...new Set(u.roles.flatMap((r) => r.permissions.map((p) => p.name)))]
+         roles: u.roles.map(r => r.name),
+         permissions: [...new Set(u.roles.flatMap(r => r.permissions.map(p => p.name)))],
+         isSuperAdmin: u.roles.some(r => r.name === TSystemRole.SUPERADMIN),
+         isAdmin: u.roles.some(r => r.name === TSystemRole.ADMIN),
+         isDriver: u.roles.some(r => r.name === TSystemRole.DRIVER),
+         isOwner: u.roles.some(r => r.name === TSystemRole.OWNER),
       }))
       this.logger.log(`Refreshing users: ${users.length}`)
       await this.cacheManager.set(LocalCacheService.C_USERS, maps)

@@ -24,16 +24,21 @@ export class RolesService {
    async list(request: IRequestDatatable): Promise<TResult> {
       const result = DefaultResult()
       try {
+         const currentUser = this.clsService.get<IUser>('currentUser')
          const columns: TDatatableColumns = [
             { field: 'id' },
             { field: 'name', search: true },
             { field: 'description', search: true },
             { field: 'system' },
          ]
+         const where = new Array<string>()
+         if (!currentUser.isSuperAdmin) {
+            where.push(`name !='super-admin'`)
+         }
          if (request?.terms?.search) {
             request.filter = request.terms.search
          }
-         result.dt = await this.dataTableService.execute(request, 'roles', 'id', columns)
+         result.dt = await this.dataTableService.execute(request, 'roles', 'id', columns, where.join(' AND '))
       } catch (e: unknown) {
          result.code = getErrorMessage(e, this.logger)
       }
@@ -67,7 +72,7 @@ export class RolesService {
                created_by: user.id,
                updated_by: user.id
             }))
-            return this.syncPermissions(row.id, role.permissions, em)
+            return this.syncPermissions(row, role.permissions, em)
          })
       } catch (e: unknown) {
          result.code = getErrorMessage(e, this.logger)
@@ -78,10 +83,10 @@ export class RolesService {
    async update(id: number, role: RoleDTO): Promise<TResult> {
       const result = DefaultResult()
       try {
-         const userId: number = this.clsService.get<number>('user_id')
-         const user = await User.findOneBy({ id: userId })
+         const currentUser = this.clsService.get<IUser>('currentUser')
+         const user = await User.findOneBy({ id: currentUser.id })
          assert.ok(user !== null, TResults.E_RECORD_NOT_FOUND)
-         const roleDb = await this.roleRepository.findOne({ where: { id }, relations: ['created_by', 'updated_by', 'permissions'] })
+         const roleDb = await this.roleRepository.findOne({ where: { id }, relations: ['permissions'] })
          assert.ok(roleDb !== null, TResults.E_RECORD_NOT_FOUND)
          await this.dataSource.manager.transaction(async (em) => {
             const repo = em.withRepository(this.roleRepository)
@@ -89,10 +94,11 @@ export class RolesService {
                name: role.name,
                description: role.description,
                system: role.system,
-               updated_by: user.id
+               updated_by: user.id,
+               updated_at: new Date()
             })
-            await em.save(roleDb, { reload: true})
-            return this.syncPermissions(id, role.permissions, em)
+            await repo.save(roleDb)
+            return this.syncPermissions(roleDb, role.permissions, em)
          })
       } catch (e: unknown) {
          result.code = getErrorMessage(e, this.logger)
@@ -120,10 +126,14 @@ export class RolesService {
    async getAll(): Promise<TResult> {
       const result: TResult = DefaultResult()
       try {
-         result.roles = await this.dataSource.manager.createQueryBuilder()
+         const currentUser = this.clsService.get<IUser>('currentUser')
+         const query = this.dataSource.manager.createQueryBuilder()
             .from(Role, 'roles')
             .select(['roles.id AS value', 'roles.description AS label'])
-            .getRawMany()
+         if (!currentUser.isSuperAdmin) {
+            query.where(`roles.name!='super-admin'`)
+         }
+         result.roles = await query.getRawMany()
       } catch (e) {
          result.code = getErrorMessage(e, this.logger)
       }
@@ -138,7 +148,7 @@ export class RolesService {
       try {
          result.permissions = await this.dataSource.manager.createQueryBuilder()
             .from(Permission, 'permissions')
-            .select(['permissions.id AS value', 'permissions.description AS label', "'wim-'||substring(name,1,3) as mod"])
+            .select(['permissions.id AS value', 'permissions.description AS label'])
             .getRawMany()
       } catch (e: unknown) {
          result.code = getErrorMessage(e, this.logger)
@@ -146,13 +156,13 @@ export class RolesService {
       return result
    }
 
-   async syncPermissions(id: number, permissions: Array<number>, transaction: EntityManager): Promise<void> {
+   async syncPermissions(role: Role, permissions: Array<number>, transaction: EntityManager): Promise<void> {
       await transaction.createQueryBuilder().delete().from(RoleHasPermission)
-         .where('role_id = :role_id', { role_id: id }).execute()
+         .where('role_id = :role_id', { role_id: role.id }).execute()
       for (const permission of permissions) {
          await transaction.save(plainToInstance(RoleHasPermission, {
-            role: id,
-            permission: permission
+            role,
+            permission
          }))
       }
    }

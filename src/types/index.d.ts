@@ -39,7 +39,11 @@ interface IUser {
    id: number
    email: number
    roles: Array<string>
-   permissions: Array<string>
+   permissions: Array<string>,
+   isSuperAdmin: boolean,
+   isAdmin: boolean,
+   isDriver: boolean,
+   isOwner: boolean
 }
 
 type TUsers = Array<IUser>

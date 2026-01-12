@@ -2,15 +2,17 @@ import { Injectable, Logger, StreamableFile } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { DataSource, EntityManager, Repository } from 'typeorm'
 import { DefaultResult, getErrorMessage } from '@/helpers'
-import { IRequestDatatable, Nullable, TDatatableColumns, TResult } from '@/types'
+import { IRequestDatatable, IUser, Nullable, TDatatableColumns, TResult } from '@/types'
 import { UserHasRole, User } from '@/entities'
 import { plainToInstance } from 'class-transformer'
 import generator from 'generate-password-ts'
 import { UserDto } from './dto'
 import * as process from 'node:process'
+import * as bcrypt from 'bcrypt'
 import { join } from 'node:path'
 import { createReadStream } from 'node:fs'
 import { DataTableService } from '@/commons/shared/data.table.service'
+import { ClsService } from 'nestjs-cls'
 
 @Injectable()
 export class UsersService {
@@ -20,12 +22,14 @@ export class UsersService {
       @InjectRepository(User)
       private readonly userRepository: Repository<User>,
       private readonly dataTableService: DataTableService,
-      private readonly dataSource: DataSource
+      private readonly dataSource: DataSource,
+      private readonly clsService: ClsService
    ) {}
 
    async list(request: IRequestDatatable): Promise<TResult> {
       const result = DefaultResult()
       try {
+         const currentUser = this.clsService.get<IUser>('currentUser')
          const columns: TDatatableColumns = [
             { field: 'id' },
             { field: 'name', search: true },
@@ -33,7 +37,11 @@ export class UsersService {
             { field: 'phone', search: true },
             { field: 'active' }
          ]
-         result.dt = await this.dataTableService.execute(request, 'admin.users', 'id', columns)
+         const where = new Array<string>()
+         if (!currentUser.isSuperAdmin) {
+            where.push('id>1')
+         }
+         result.dt = await this.dataTableService.execute(request, 'users', 'id', columns, where.join(' AND '))
       } catch (e: unknown) {
          result.code = getErrorMessage(e, this.logger)
       }
@@ -58,14 +66,17 @@ export class UsersService {
             length: 8,
             numbers: true
          })
+         const currentUser = this.clsService.get<IUser>('currentUser')
          await this.dataSource.manager.transaction(async (em) => {
             const repo = em.withRepository(this.userRepository)
             const record = repo.create({
                name: user.name,
                email: user.email,
-               password,
+               password: await bcrypt.hash(password, 10),
                phone: user.phone,
-               active: user.active
+               active: user.active,
+               created_by: currentUser.id,
+               updated_by: currentUser.id
             })
             const row = await repo.save(record)
             return this.syncRoles(row.id, user.roles, em)
@@ -79,13 +90,15 @@ export class UsersService {
    async update(id: number, user: UserDto): Promise<TResult> {
       const result = DefaultResult()
       try {
+         const currentUser = this.clsService.get<IUser>('currentUser')
          await this.dataSource.manager.transaction(async (em) => {
             const repo = em.withRepository(this.userRepository)
             await repo.update(id, {
                name: user.name,
                email: user.email,
                phone: user.phone,
-               active: user.active
+               active: user.active,
+               updated_by: currentUser.id
             })
             return this.syncRoles(id, user.roles, em)
          })
